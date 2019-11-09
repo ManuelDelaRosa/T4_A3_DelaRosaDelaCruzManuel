@@ -1,0 +1,179 @@
+
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>ELIMINAR/MODIFICAR ALUMNOS</title>
+	<style type="text/css">
+		table, th, td{
+			 border: 1px solid navy;
+		}
+	</style>
+
+
+	
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/custom.css">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+</head>
+<body>
+
+	<?php require_once('menu_principal.html'); ?>
+	
+	<h1>ELIMINAR/MODIFICAR Registros</h1>
+
+	<!--  MI FORMA ANTERIOR --------------------------------------------------------------- -->
+	<table>
+		<tr><th>Num. Control</th><th>Nombre</th><th>Primer Ap.</th><th>Segundo Ap.</th><th>Edad</th><th>Semestre</th><th>Carrera</th></tr>	
+	
+
+		<?php
+			include_once("../scripts_php/conexion_bd.php");
+			$obj = new ConexionBD();
+			$conexion = $obj->getConexion();
+
+			echo "<hr>";
+			//var_dump($conexion);
+
+			$sql = "SELECT * FROM Alumnos";
+			echo "<hr>";
+			//var_dump($sql);
+			
+			$res = mysqli_query($conexion, $sql);
+			echo "<hr>";
+			//var_dump($res);
+
+			if(mysqli_num_rows($res)>0){
+				while ($fila = mysqli_fetch_assoc($res)) {
+					printf("<tr> <td>" .  $fila['Num_Control'] . "</td>".
+										"<td>". $fila['Nombre_Alumno'] . "</td>".
+										"<td>". $fila['Primer_Ap_Alumno'] . "</td>".
+										"<td>". $fila['Segundo_Ap_Alumno'] . "</td>".
+										"<td>". $fila['Edad'] . "</td>".
+										"<td>". $fila['Semestre'] . "</td>".  
+										"<td>". $fila['Carrera'] . "</td>".
+										"<td> 
+
+										<a href='../scripts/servidor/procesar_eliminacion.php?nc=%s' 
+										style='color: red;'> 
+
+										ELIMINAR </a>" .
+										 "</tr>",  $fila['Num_Control'] );
+				}
+			}
+		?>
+	</table>
+	<!-- ------------------------------------------------------------------------------------------ -->
+
+
+
+	<br>
+	<br>
+	<h1 style="border-bottom: 2px solid black;">FORMA 2</h1>
+	
+
+
+	<div class="container">
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-8"><h2>Listado de  <b>ALUMNOS</b></h2></div>
+                    <div class="col-sm-4">
+                        <a href="create.php" class="btn btn-info add-new">
+                        	<i class="fa fa-plus"></i> 
+                        	Agregar ALUMNO
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Numero de Control</th>
+                        <th>Nombre(s)</th>
+                        <th>Primer Ap.</th>
+						<th>Segundo Ap.</th>
+                        <th>Edad</th>
+                        <th>Semestre</th>
+                        <th>Carrera</th>
+                        <th>REALIZAR</th>
+                    </tr>
+                </thead>
+                 
+                <tbody>    
+                        <?php 
+                        	include_once("../scripts_php/alumno_dao.php");
+							$aDAO = new AlumnoDAO();
+							$listaAlumnos=$aDAO->obtenerTodos();
+
+							while ($fila=mysqli_fetch_object($listaAlumnos)){
+									$nc = $fila->Num_Control;
+									$n = $fila->Nombre_Alumno;
+									$pa = $fila->Primer_Ap_Alumno;
+									$sa = $fila->Segundo_Ap_Alumno;
+									$e = $fila->Edad;
+									$s = $fila->Semestre;
+									$c = $fila->Carrera;
+								?>
+								<tr>
+									<td><?php echo $nc;?></td>
+									<td><?php echo $n;?></td>
+									<td><?php echo $pa;?></td>
+									<td><?php echo $sa;?></td>
+									<td><?php echo $e;?></td>
+									<td><?php echo $s;?></td>
+									<td><?php echo $c;?></td>
+									
+									<td style="text-align: center;">
+
+										<a href="formulario_actualizar.php?nc=<?php echo $nc;?>" class="edit" title="Edición" data-toggle="tooltip">
+											<!-- <i class="material-icons">&#xE254;</i> -->
+
+
+<i class="fa fa-pencil" style="font-size:30px;color:orange;"></i>
+
+										</a>
+										<a href="../scripts_php/procesar_bajas.php?nc=<?php echo $nc;?>" class="delete" title="Eliminación" data-toggle="tooltip">
+											<!-- <i class="material-icons">&#xE872;</i> -->
+
+<i class="fa fa-trash" style="font-size:30px;color:red; padding-left: 30px;"></i>											
+										</a>
+									</td>
+								</tr>	
+								<?php
+							}
+								?>  
+                </tbody>
+            </table>
+        </div>
+    </div>     
+	
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
